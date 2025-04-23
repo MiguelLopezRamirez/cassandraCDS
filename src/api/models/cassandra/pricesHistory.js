@@ -1,5 +1,4 @@
 // src/models/cassandra/pricesHistory.js
-const cassandra = require('cassandra-driver');
 const { client } = require('../../../config/connectToCasssandra.config');
 
 const PricesHistoryModel = {
@@ -32,7 +31,7 @@ const PricesHistoryModel = {
 
   // Método para obtener todos los registros (sin orden garantizado)
   async getAll(options = {}) {
-    const { limit = 100, pageState } = options;
+    const { limit = 100 } = options;
     
     const query = `
       SELECT * FROM ${this.keyspace}.${this.table}
@@ -41,12 +40,10 @@ const PricesHistoryModel = {
     try {
       const result = await client.execute(query, [limit], { 
         prepare: true,
-        pageState: pageState
       });
       
       return {
         items: result.rows,
-        pageState: result.pageState
       };
     } catch (error) {
       console.error('Error en PricesHistoryModel.getAll:', error);
@@ -65,41 +62,16 @@ const PricesHistoryModel = {
       ALLOW FILTERING`;
     
     try {
-      const result = await this.executeQuery(query, [minVolume, maxVolume, limit], { 
-        prepare: true, 
-      });
+      const result = await client.execute(query, 
+        [minVolume, maxVolume, limit], 
+        { prepare: true }
+      );
       
       return {
         items: result.rows,
       };
     } catch (error) {
       console.error('Error en PricesHistoryModel.getByVolumeRange:', error);
-      throw error;
-    }
-  },
-
-  // Método interno para ejecutar consultas (abstracción del cliente)
-  async executeQuery(query, params, options) {
-    // Aquí inyectas la dependencia del cliente de tu configuración
-    const { client } = require('../../../config/connectToCasssandra.config');
-    return await client.execute(query, params, options);
-  },
-
-  // Método para insertar un nuevo registro
-  async insert(data) {
-    const columns = Object.keys(data).join(', ');
-    const placeholders = Object.keys(data).map(() => '?').join(', ');
-    
-    const query = `
-      INSERT INTO ${this.keyspace}.${this.table} (${columns})
-      VALUES (${placeholders})`;
-    
-    try {
-      const params = Object.values(data);
-      await client.execute(query, params, { prepare: true });
-      return true;
-    } catch (error) {
-      console.error('Error en PricesHistoryModel.insert:', error);
       throw error;
     }
   },
