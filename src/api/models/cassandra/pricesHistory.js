@@ -117,10 +117,35 @@ const PricesHistoryModel = {
       )`;
     
     await client.execute(query);
-  }
+  },
+
+    // Método para actualizar un registro existente
+    async update(id, data) {
+      try {
+        const setClause = Object.keys(data)
+          .map(key => `${key} = ?`)
+          .join(', ');
+  
+        const query = `
+          UPDATE ${this.keyspace}.${this.table}
+          SET ${setClause}
+          WHERE id = ?
+        `;
+  
+        const params = [...Object.values(data), id];
+  
+        await client.execute(query, params, { prepare: true });
+        return { success: true, message: 'Registro actualizado correctamente' };
+      } catch (error) {
+        console.error('Error en PricesHistoryModel.update:', error);
+        throw error;
+      }
+    }
+  
 };
 
 // Inicializamos la tabla al cargar el modelo
 PricesHistoryModel.init();
 
 module.exports = PricesHistoryModel;
+

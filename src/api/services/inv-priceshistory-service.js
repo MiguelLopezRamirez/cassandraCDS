@@ -42,45 +42,47 @@ async function GetAllPricesHistory(req) {
 //     }
 // } 
 
-// async function UpdateOnePricesHistory(req){
-//     try{
-//         const idPrice = req.req.query?.IdPrice
-//         const newData = req.req.body.price;
+ async function UpdateOnePricesHistory(req){
+     try{
+         const idPrice = req.req.query?.IdPrice
+         const newData = req.req.body.price;
 
 
-//         const updatedPrice = await ztpriceshistory.findOneAndUpdate(
-//             { ID: idPrice },       // Filtro por ID
-//             newData,          // Datos a actualizar
-//             { new: true }     // Devuelve el documento actualizado
-//         );
+         const updatedPrice = await ztpriceshistory.findOneAndUpdate(
+             { ID: idPrice },       // Filtro por ID
+             newData,          // Datos a actualizar
+             { new: true }     // Devuelve el documento actualizado
+       );
 
-//         return(JSON.parse(JSON.stringify({updatedPrice})));
-//     }catch(error){
-//         console.log(error)
-//         return error;
-//     }
-// }
+         return(JSON.parse(JSON.stringify({updatedPrice})));
+     }catch(error){
+         console.log(error)
+         return error;
+    }
+ }
 
-// async function DeleteOnePricesHistory(req){
-//     try{
-//         const idPrice = req.req.query?.IdPrice
+  
+
+ //async function DeleteOnePricesHistory(req){
+   //  try{
+     //    const idPrice = req.req.query?.IdPrice
 
 
-//         const deletionResult = await ztpriceshistory.findOneAndDelete(
-//             { ID: idPrice }  // Filtro por ID
-//         );
+    //     const deletionResult = await ztpriceshistory.findOneAndDelete(
+   //          { ID: idPrice }  // Filtro por ID
+   //      );
 
-//         return(JSON.parse(JSON.stringify({deletionResult})));
-//     }catch(error){
-//         console.log(error)
-//         return error;
-//     }
-// }
+   //      return(JSON.parse(JSON.stringify({deletionResult})));
+   //  }catch(error){
+  //       console.log(error)
+   //      return error;
+   //  }
+ //}
 
 
 module.exports = { 
     GetAllPricesHistory, 
     // AddOnePricesHistory, 
-    // UpdateOnePricesHistory,
+     UpdateOnePricesHistory
     // DeleteOnePricesHistory 
 };
