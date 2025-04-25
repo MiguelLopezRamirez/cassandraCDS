@@ -61,28 +61,23 @@ async function GetAllPricesHistory(req) {
     }
  }
 
+ async function DeleteOnePricesHistory(req){
+    try {
+      const idPrice = parseInt(req.req.query?.IdPrice);
+      if (!idPrice) throw new Error("Se requiere el parámetro IdPrice");
   
-
- //async function DeleteOnePricesHistory(req){
-   //  try{
-     //    const idPrice = req.req.query?.IdPrice
-
-
-    //     const deletionResult = await ztpriceshistory.findOneAndDelete(
-   //          { ID: idPrice }  // Filtro por ID
-   //      );
-
-   //      return(JSON.parse(JSON.stringify({deletionResult})));
-   //  }catch(error){
-  //       console.log(error)
-   //      return error;
-   //  }
- //}
+      const result = await PricesHistoryModel.deleteById(idPrice);
+      return result;
+    } catch(error) {
+      console.error("Error en DeleteOnePricesHistory:", error);
+      throw error;
+    }
+  }
 
 
 module.exports = { 
     GetAllPricesHistory, 
     // AddOnePricesHistory, 
-     UpdateOnePricesHistory
-    // DeleteOnePricesHistory 
+    UpdateOnePricesHistory,
+    DeleteOnePricesHistory 
 };

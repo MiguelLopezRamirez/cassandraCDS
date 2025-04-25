@@ -140,9 +140,26 @@ const PricesHistoryModel = {
         console.error('Error en PricesHistoryModel.update:', error);
         throw error;
       }
+    },
+
+  // Agregar esto en PricesHistoryModel (justo después del método update)
+  async deleteById(id) {
+    const query = `
+      DELETE FROM ${this.keyspace}.${this.table}
+      WHERE id = ?`;
+    
+    try {
+      await client.execute(query, [id], { prepare: true });
+      return { success: true, message: 'Registro eliminado correctamente' };
+    } catch (error) {
+      console.error('Error en PricesHistoryModel.deleteById:', error);
+      throw error;
     }
+  }
   
 };
+
+
 
 // Inicializamos la tabla al cargar el modelo
 PricesHistoryModel.init();
