@@ -155,9 +155,35 @@ const PricesHistoryModel = {
       console.error('Error en PricesHistoryModel.deleteById:', error);
       throw error;
     }
+  },
+  // Método para insertar múltiples registros
+async insertMany(pricesArray) {
+  if (!pricesArray || pricesArray.length === 0) {
+    return [];
   }
   
+  // Usamos batch para múltiples inserciones
+  const queries = pricesArray.map(price => {
+    const columns = Object.keys(price).join(', ');
+    const placeholders = Object.keys(price).map(() => '?').join(', ');
+    
+    return {
+      query: `INSERT INTO ${this.keyspace}.${this.table} (${columns}) VALUES (${placeholders})`,
+      params: Object.values(price)
+    };
+  });
+  
+  try {
+    await client.batch(queries, { prepare: true });
+    return pricesArray; // Retornamos los datos insertados
+  } catch (error) {
+    console.error('Error en PricesHistoryModel.insertMany:', error);
+    throw error;
+  }
+}
+  
 };
+
 
 
 

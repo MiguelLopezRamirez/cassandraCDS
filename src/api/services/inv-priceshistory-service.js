@@ -31,16 +31,44 @@ async function GetAllPricesHistory(req) {
     }
 }
 
-// async function AddOnePricesHistory(req){
-//     try{
-//         const newPrices = req.req.body.prices;
-//         let pricesHistory;
-//         pricesHistory = await ztpriceshistory.insertMany(newPrices, {order: true});
-//         return(JSON.parse(JSON.stringify(pricesHistory)));
-//     }catch(error){
-//         return error;
-//     }
-// } 
+async function AddManyPricesHistory(pricesArray) {
+    try {
+        // Validación básica
+        if (!Array.isArray(pricesArray)) {
+            throw new Error('Se esperaba un array de precios');
+        }
+        
+        // Procesar cada elemento
+        const processedData = pricesArray.map(price => {
+            // Conversión de fecha
+            let cassandraDate;
+            if (price.DATE) {
+                if (typeof price.DATE === 'number') {
+                    cassandraDate = new Date(price.DATE).toISOString();
+                } else {
+                    cassandraDate = price.DATE;
+                }
+            } else {
+                cassandraDate = new Date().toISOString();
+            }
+
+            return {
+                id: parseInt(price.ID),
+                date: cassandraDate,
+                open: parseFloat(price.OPEN),
+                high: parseFloat(price.HIGH),
+                low: parseFloat(price.LOW),
+                close: parseFloat(price.CLOSE),
+                volume: parseFloat(price.VOLUME)
+            };
+        });
+
+        return await PricesHistoryModel.insertMany(processedData);
+    } catch(e) {
+        console.error("Error en AddManyPricesHistory:", e);
+        throw e;
+    }
+}
 
  async function UpdateOnePricesHistory(req){
      try{
@@ -77,7 +105,7 @@ async function GetAllPricesHistory(req) {
 
 module.exports = { 
     GetAllPricesHistory, 
-    // AddOnePricesHistory, 
+    AddManyPricesHistory,
     UpdateOnePricesHistory,
     DeleteOnePricesHistory 
 };

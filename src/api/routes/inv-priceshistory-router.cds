@@ -6,7 +6,8 @@ service PricesHistoryRoute @(path:'/api/inv') {
     //instance the entity
     entity priceshistory as projection on myph.priceshistory;
     entity strategies as projection on myph.strategies;
-
+    entity pricehistoryinput2 as projection on myph.pricehistoryinput2;
+    
     //MARL: Ger Some Prices History
     //localhost:3333 /api/priceshistory/getall
     @Core.Description:'get-all-prices-history'
@@ -14,9 +15,10 @@ service PricesHistoryRoute @(path:'/api/inv') {
     function getall()
     returns array of priceshistory;
 
-    @Core.Description: 'add-one-prices-history'
-    @path: 'addone'
-    action addone(prices:priceshistory) returns array of priceshistory;
+    @Core.Description: 'add-oneormanny-prices-history'
+    @path: 'addmany'
+    action addmany(prices: array of pricehistoryinput2)
+    returns array of priceshistory;
 
     @Core.Description: 'update-one-prices-history'
     @path: 'updateone'
