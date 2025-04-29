@@ -15,7 +15,8 @@
     "cassandra-driver": "^4.8.0",
     "cors": "^2.8.5",
     "express": "4",
-    "mongoose": "^8.14.0"
+    "mongoose": "^8.14.0",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.0",

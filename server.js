@@ -8,6 +8,7 @@ const router = express.Router();
 // Importa mongoose usando require (ya que estás usando CommonJS)
 const mongoose =  require('./src/config/connectToMongoDB.config').mongoose;
 const cassandra = require('./src/config/connectToCasssandra.config').cassandra;
+const redis = require("./src/config/connectToRedis.js");
 
 const docEnvX = require("./src/config/dotenvXConfig")
 

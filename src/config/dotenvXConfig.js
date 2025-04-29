@@ -16,5 +16,8 @@ module.exports = {
     CONNECTION_STRING: process.env.CONNECTION_STRING || 'NO SE ENCONTRO VARIABLE DE ENTORNO', 
     DATABASE: process.env.DATABASE || 'NO SE ENCONTRO VARIABLE DE ENTORNO',  
     DB_USER: process.env.DB_USER || 'NO SE ENCONTRO VARIABLE DE ENTORNO',  
-    DB_PASSWORD: process.env.DB_PASSWORD || 'NO SE ENCONTRO VARIABLE DE ENTORNO'
+    DB_PASSWORD: process.env.DB_PASSWORD || 'NO SE ENCONTRO VARIABLE DE ENTORNO',
+
+    //Redis
+    REDIS_URL : process.env.REDIS_URL || "No encontré variable para conexión a Redis"
 };
