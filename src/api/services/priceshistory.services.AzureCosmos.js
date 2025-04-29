@@ -1,4 +1,4 @@
-const { conectionAzureCosmosDB } = require('../../config/connectToAzureCosmosDB'); // Asegúrate de que esté correctamente importado
+const { conectionAzureCosmosDB } = require('../../config/conectionToAzureCosmosDB'); // Asegúrate de que esté correctamente importado
 //Funcion GetAll
 async function GetAllPricesHistoryCosmos(req) {
   try {

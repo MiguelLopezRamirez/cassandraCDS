@@ -63,7 +63,6 @@ class InvestionsClass extends cds.ApplicationService{
         this.on("deleteoneMongo", async (req)=>{
             return servicioMongo.DeleteOnePricesHistory(req);
         })
-        return await super.init();
 
         // -- AZURE COSMOS --
         // GET para Cosmos DB
@@ -88,6 +87,8 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
+
+        return await super.init();
 
 
     };
