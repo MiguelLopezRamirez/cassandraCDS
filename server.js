@@ -9,6 +9,7 @@ const router = express.Router();
 const mongoose =  require('./src/config/connectToMongoDB.config').mongoose;
 const cassandra = require('./src/config/connectToCasssandra.config').cassandra;
 const redis = require("./src/config/connectToRedis.js");
+const conectionAzureCosmosDB = require('./src/config/conectionToAzureCosmosDB');
 
 const docEnvX = require("./src/config/dotenvXConfig")
 
