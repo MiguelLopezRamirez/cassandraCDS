@@ -31,56 +31,81 @@ async function GetAllPricesHistory(req) {
     }
 }
 
-// async function AddOnePricesHistory(req){
-//     try{
-//         const newPrices = req.req.body.prices;
-//         let pricesHistory;
-//         pricesHistory = await ztpriceshistory.insertMany(newPrices, {order: true});
-//         return(JSON.parse(JSON.stringify(pricesHistory)));
-//     }catch(error){
-//         return error;
-//     }
-// } 
+async function AddManyPricesHistory(pricesArray) {
+    try {
+        // Validación básica
+        if (!Array.isArray(pricesArray)) {
+            throw new Error('Se esperaba un array de precios');
+        }
+        
+        // Procesar cada elemento
+        const processedData = pricesArray.map(price => {
+            // Conversión de fecha
+            let cassandraDate;
+            if (price.DATE) {
+                if (typeof price.DATE === 'number') {
+                    cassandraDate = new Date(price.DATE).toISOString();
+                } else {
+                    cassandraDate = price.DATE;
+                }
+            } else {
+                cassandraDate = new Date().toISOString();
+            }
 
-// async function UpdateOnePricesHistory(req){
-//     try{
-//         const idPrice = req.req.query?.IdPrice
-//         const newData = req.req.body.price;
+            return {
+                id: parseInt(price.ID),
+                date: cassandraDate,
+                open: parseFloat(price.OPEN),
+                high: parseFloat(price.HIGH),
+                low: parseFloat(price.LOW),
+                close: parseFloat(price.CLOSE),
+                volume: parseFloat(price.VOLUME)
+            };
+        });
+
+        return await PricesHistoryModel.insertMany(processedData);
+    } catch(e) {
+        console.error("Error en AddManyPricesHistory:", e);
+        throw e;
+    }
+}
+
+ async function UpdateOnePricesHistory(req){
+     try{
+         const idPrice = req.req.query?.IdPrice
+         const newData = req.req.body.price;
 
 
-//         const updatedPrice = await ztpriceshistory.findOneAndUpdate(
-//             { ID: idPrice },       // Filtro por ID
-//             newData,          // Datos a actualizar
-//             { new: true }     // Devuelve el documento actualizado
-//         );
+         const updatedPrice = await ztpriceshistory.findOneAndUpdate(
+             { ID: idPrice },       // Filtro por ID
+             newData,          // Datos a actualizar
+             { new: true }     // Devuelve el documento actualizado
+       );
 
-//         return(JSON.parse(JSON.stringify({updatedPrice})));
-//     }catch(error){
-//         console.log(error)
-//         return error;
-//     }
-// }
+         return(JSON.parse(JSON.stringify({updatedPrice})));
+     }catch(error){
+         console.log(error)
+         return error;
+    }
+ }
 
-// async function DeleteOnePricesHistory(req){
-//     try{
-//         const idPrice = req.req.query?.IdPrice
-
-
-//         const deletionResult = await ztpriceshistory.findOneAndDelete(
-//             { ID: idPrice }  // Filtro por ID
-//         );
-
-//         return(JSON.parse(JSON.stringify({deletionResult})));
-//     }catch(error){
-//         console.log(error)
-//         return error;
-//     }
-// }
+ async function DeleteOnePricesHistory(req){
+    try {
+      const idPrice = parseInt(req.req.query?.IdPrice);
+      if (!idPrice) throw new Error("Se requiere el parámetro IdPrice");
+  
+      const result = await PricesHistoryModel.deleteById(idPrice);
+      return result;
+    } catch(error) {
+      console.error("Error en DeleteOnePricesHistory:", error);
+      throw error;
+    }
+  }
 
 
 module.exports = { 
     GetAllPricesHistory, 
-    // AddOnePricesHistory, 
-    // UpdateOnePricesHistory,
-    // DeleteOnePricesHistory 
+    AddManyPricesHistory,
+    UpdateOnePricesHistory,
+    DeleteOnePricesHistory 
 };

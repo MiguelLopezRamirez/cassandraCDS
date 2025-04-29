@@ -18,9 +18,21 @@ class InvestionsClass extends cds.ApplicationService{
            return servicio.GetAllPricesHistory(req);
         });
 
-        this.on("addone", async (req)=>{
-            return servicio.AddOnePricesHistory(req);
-        })
+        this.on("addmany", async (req)=>{
+            // Asegurarnos que estamos procesando el array correctamente
+            const pricesArray = Array.isArray(req.data) ? req.data : req.data.prices;
+            
+            // Convertir fechas si es necesario
+            const processedArray = pricesArray.map(item => {
+                let dateValue = item.DATE;
+                if (dateValue && typeof dateValue === 'number') {
+                    item.DATE = new Date(dateValue).toISOString();
+                }
+                return item;
+            });
+            
+            return servicio.AddManyPricesHistory(processedArray);
+        });
 
         this.on("updateone", async (req)=>{
             return servicio.UpdateOnePricesHistory(req);
