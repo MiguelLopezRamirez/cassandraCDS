@@ -50,4 +50,13 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @path: 'deleteone'
     function deleteoneMongo() 
     returns array of priceshistory;
+
+     // -- AZURE COSMOS --
+    @Core.Description: 'get-all-prices-inversions'
+    @path :'getallCosmos'
+    function getallCosmos() returns array of priceshistory ;
+
+    @Core.Description: 'addOne-prices-history-cosmos'  
+    @path :'addOneCosmos'  
+    action addOneCosmos(prices : priceshistory) returns array of priceshistory;
 };
