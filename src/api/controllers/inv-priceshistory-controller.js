@@ -5,6 +5,7 @@ const cds = require ('@sap/cds');
 // aun no esta creado el servicio
 const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
 const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
+const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
 //3.- estructura princiapl  de la clas de contorller
 
 
@@ -63,6 +64,32 @@ class InvestionsClass extends cds.ApplicationService{
             return servicioMongo.DeleteOnePricesHistory(req);
         })
         return await super.init();
+
+        // -- AZURE COSMOS --
+        // GET para Cosmos DB
+        this.on('getallCosmos', async (req) => {
+            try {
+              const pricesHistory = await GetAllPricesHistoryCosmos(req);
+              return pricesHistory;  // Devolver la respuesta obtenida del servicio
+            } catch (error) {
+              console.error('Error al procesar la solicitud:', error);
+              return { error: 'Hubo un error al obtener los datos.' };
+            }
+        });
+
+        // POST para Cosmos DB
+        this.on('addOneCosmos', async (req) => {
+            try {
+                return await AddOnePricesHistoryCosmos(req);
+            } catch (error) {
+                req.error({
+                    code: 500,
+                    message: error.message
+                });
+            }
+        });
+
+
     };
 
 
