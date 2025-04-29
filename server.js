@@ -10,6 +10,7 @@ const mongoose =  require('./src/config/connectToMongoDB.config').mongoose;
 const cassandra = require('./src/config/connectToCasssandra.config').cassandra;
 const redis = require("./src/config/connectToRedis.js");
 const conectionAzureCosmosDB = require('./src/config/conectionToAzureCosmosDB');
+const neo4j = require('./src/config/connectToNeo4j') //conexion a Neo4j
 
 const docEnvX = require("./src/config/dotenvXConfig")
 
