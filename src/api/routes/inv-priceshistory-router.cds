@@ -10,23 +10,44 @@ service PricesHistoryRoute @(path:'/api/inv') {
     
     //MARL: Ger Some Prices History
     //localhost:3333 /api/priceshistory/getall
+    //Cassandra
     @Core.Description:'get-all-prices-history'
-    @path : 'getall'
-    function getall()
+    @path : 'getallCassandra'
+    function getallCassandra()
     returns array of priceshistory;
 
     @Core.Description: 'add-oneormanny-prices-history'
-    @path: 'addmany'
-    action addmany(prices: array of pricehistoryinput2)
+    @path: 'addmanyCassandra'
+    action addmanyCassandra(prices: array of pricehistoryinput2)
     returns array of priceshistory;
 
     @Core.Description: 'update-one-prices-history'
+    @path: 'updateoneCassandra'
+    action updateoneCassandra(price:priceshistory) 
+    returns array of priceshistory;
+
+    @Core.Description: 'delete-one-prices-history'
+    @path: 'deleteoneCassandra'
+    function deleteoneCassandra() 
+    returns array of priceshistory;
+
+    //MongoDb
+        @Core.Description:'get-all-prices-history'
+    @path : 'getall'
+    function getallMongo()
+    returns array of priceshistory;
+
+    @Core.Description: 'add-one-prices-history'
+    @path: 'addone'
+    action addoneMongo(prices:priceshistory) returns array of priceshistory;
+
+    @Core.Description: 'update-one-prices-history'
     @path: 'updateone'
-    action updateone(price:priceshistory) 
+    action updateoneMongo(price:priceshistory) 
     returns array of priceshistory;
 
     @Core.Description: 'delete-one-prices-history'
     @path: 'deleteone'
-    function deleteone() 
+    function deleteoneMongo() 
     returns array of priceshistory;
 };

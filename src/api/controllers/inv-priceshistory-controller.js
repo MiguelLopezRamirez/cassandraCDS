@@ -3,7 +3,8 @@ const cds = require ('@sap/cds');
 
 //2.-importar el servicio
 // aun no esta creado el servicio
-const servicio = require('../services/inv-priceshistory-service')
+const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
+const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
 //3.- estructura princiapl  de la clas de contorller
 
 
@@ -11,14 +12,14 @@ class InvestionsClass extends cds.ApplicationService{
 
     //4.-iniciiarlizarlo de manera asincrona
     async init (){
-
-        this.on('getall', async (req)=> {
+        // Cassandra
+        this.on('getallCassandra', async (req)=> {
             
             //llamada al metodo de servicio y retorna el resultado de la ruta
-           return servicio.GetAllPricesHistory(req);
+           return servicioCassandra.GetAllPricesHistory(req);
         });
 
-        this.on("addmany", async (req)=>{
+        this.on("addmanyCassandra", async (req)=>{
             // Asegurarnos que estamos procesando el array correctamente
             const pricesArray = Array.isArray(req.data) ? req.data : req.data.prices;
             
@@ -31,18 +32,36 @@ class InvestionsClass extends cds.ApplicationService{
                 return item;
             });
             
-            return servicio.AddManyPricesHistory(processedArray);
+            return servicioCassandra.AddManyPricesHistory(processedArray);
         });
 
-        this.on("updateone", async (req)=>{
-            return servicio.UpdateOnePricesHistory(req);
+        this.on("updateoneCassandra", async (req)=>{
+            return servicioCassandra.UpdateOnePricesHistory(req);
         })
 
-        this.on("deleteone", async (req)=>{
-            return servicio.DeleteOnePricesHistory(req);
+        this.on("deleteoneCassandra", async (req)=>{
+            return servicioCassandra.DeleteOnePricesHistory(req);
         })
 
 
+        // Mongo
+        this.on('getallMongo', async (req)=> {
+            
+            //llamada al metodo de servicio y retorna el resultado de la ruta
+           return servicioMongo.GetAllPricesHistory(req);
+        });
+
+        this.on("addoneMongo", async (req)=>{
+            return servicioMongo.AddOnePricesHistory(req);
+        })
+
+        this.on("updateoneMongo", async (req)=>{
+            return servicioMongo.UpdateOnePricesHistory(req);
+        })
+
+        this.on("deleteoneMongo", async (req)=>{
+            return servicioMongo.DeleteOnePricesHistory(req);
+        })
         return await super.init();
     };
 

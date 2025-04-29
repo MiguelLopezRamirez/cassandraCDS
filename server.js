@@ -6,6 +6,7 @@ const cds = require("@sap/cds");
 const cors = require("cors");
 const router = express.Router();
 // Importa mongoose usando require (ya que estás usando CommonJS)
+const mongoose =  require('./src/config/connectToMongoDB.config').mongoose;
 const cassandra = require('./src/config/connectToCasssandra.config').cassandra;
 
 const docEnvX = require("./src/config/dotenvXConfig")
