@@ -59,6 +59,7 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @Core.Description: 'addOne-prices-history-cosmos'  
     @path :'addOneCosmos'  
     action addOneCosmos(prices : priceshistory) returns array of priceshistory;
+    
     //--REDIS---
     @Core.Description: 'Get Redis'  
     @path :'getRedis'  
@@ -105,4 +106,5 @@ service PricesHistoryRoute @(path:'/api/inv') {
   @path: 'deletenode'
     function deletenode()
     returns array of LargeString;
+    
 };
