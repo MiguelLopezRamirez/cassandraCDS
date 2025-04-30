@@ -59,4 +59,16 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @Core.Description: 'addOne-prices-history-cosmos'  
     @path :'addOneCosmos'  
     action addOneCosmos(prices : priceshistory) returns array of priceshistory;
+
+    //  NEO4J
+    //Get All
+    @Core.Description: 'get-all-prices-history-Neo4j'
+    @path            : 'N4GetALL'
+    function N4GetALL()                                             
+    returns array of LargeString;//Indica que devolverá múltiples registros en formato JSON stringificado
+
+    @Core.Description: 'add-one-node-4j'
+    @path: 'addnode'
+    function addnode(body:priceshistory)
+    returns array of LargeString;
 };

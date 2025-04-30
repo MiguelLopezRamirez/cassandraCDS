@@ -7,7 +7,8 @@ const servicioCassandra = require('../services/inv-priceshistory-service-cassand
 const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
 const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
 //3.- estructura princiapl  de la clas de contorller
-
+//Neo4j
+const {N4GetALL, AddOneNode} = require('../services/inv-neo4j-pricehistory-service');
 
 class InvestionsClass extends cds.ApplicationService{
 
@@ -87,6 +88,14 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
+
+         //NEO4J⚠️
+         this.on('N4GetALL', async (req)=> { 
+            return N4GetALL(req);
+         });
+         this.on('addnode',async(req) =>{
+            return AddOneNode(req)});
+        
 
         return await super.init();
 
