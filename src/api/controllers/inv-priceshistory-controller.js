@@ -10,6 +10,8 @@ const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshi
 //const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
 
 //3.- estructura princiapl  de la clas de contorller
+
+
 class InvestionsClass extends cds.ApplicationService{
     
     //4.-iniciiarlizarlo de manera asincrona
@@ -44,7 +46,16 @@ class InvestionsClass extends cds.ApplicationService{
         this.on("deleteoneCassandra", async (req)=>{
             return servicioCassandra.DeleteOnePricesHistory(req);
         })
-
+        
+        //GET PARA REDIS
+        this.on("getRedis", async (req) => {
+            // call the service method and return the result to route.
+            return GetRedis(req);
+         });
+         //POST PARA REDIS
+         this.on("addOneRedis", async (req) => {
+            return AddOnePricesHistoryRedis(req);
+          });
 
         // Mongo
         this.on('getallMongo', async (req)=> {
@@ -76,7 +87,7 @@ class InvestionsClass extends cds.ApplicationService{
               return { error: 'Hubo un error al obtener los datos.' };
             }
         });
-
+        
         // POST para Cosmos DB
         this.on('addOneCosmos', async (req) => {
             try {
@@ -88,15 +99,7 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
-        //GET PARA REDIS
-        this.on("getRedis", async (req) => {
-            // call the service method and return the result to route.
-            return GetRedis(req);
-         });
-        //POST PARA REDIS
-        this.on("addOneRedis", async (req) => {
-            return AddOnePricesHistoryRedis(req);
-        });   
+
         return await super.init();
 
 
