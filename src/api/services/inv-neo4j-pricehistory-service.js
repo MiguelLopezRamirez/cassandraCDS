@@ -263,6 +263,82 @@ async function AddOneNode(req) {
         await session.close();
     }
 }
+async function UpdateNode(req) {
+    const id = parseInt(req.req.query?.id);
+    const cambios = req.req.body.body;
+    console.log('Cambios: ',cambios);
+    const session = driverInstance.session({database:'neo4j'});
+    try {
+        const res = await session.run(`
+            WITH date($date) AS parsedDate,
+                toInteger($id) AS idValue,
+                toFloat($volume) AS volumeValue,
+                toFloat($open) AS openValue,
+                toFloat($high) AS highValue,
+                toFloat($low) AS lowValue,
+                toFloat($close) AS closeValue
+            // Buscar el nodo Day existente con el id y la fecha especificados.
+            MATCH (d:Day { id: idValue})
+            // Relacionar hacia el nodo Price
+            MATCH (d)-[:HAS_PRICE]->(p:Price)
+            // Actualizar las propiedades de ambos nodos
+            SET d.volume = volumeValue,
+                d.date = parsedDate,
+                p.open  = openValue,
+                p.high  = highValue,
+                p.low   = lowValue,
+                p.close = closeValue
+            RETURN {
+                day: {
+                    id: toString(d.id),
+                    date: toString(date({ year: d.date.year, month: d.date.month, day: d.date.day })),
+                    volume: d.volume
+                },
+                price: p {
+                    Nid: toString(id(p)),
+                    open: p.open,
+                    high: p.high,
+                    low: p.low,
+                    close: p.close
+                }
+            } as result
+            `,
+            {
+                id: id,
+                date: cambios.DATE,
+                volume: cambios.VOLUME,
+                open: cambios.OPEN,
+                high: cambios.HIGH,
+                low: cambios.LOW,
+                close: cambios.CLOSE
+            });
+            console.log('RES: ',res);
+            return res.records[0].get('result');
+    } catch (error) {
+        console.error('Error en el servicio:', error);
+        return error;
+    } finally {
+        await session.close();
+    }
+}
+async function DeleteNode(req) {
+    const id = parseInt(req.req.query?.id);
+    const session = driverInstance.session({database:'neo4j'});
+    try { 
+        const res = await session.run(`
+            MATCH (d)-[:HAS_PRICE]->(p:Price)
+            WHERE d.id = $nodeId
+            DETACH DELETE d,p
+            `, { nodeId: id }); //Esta consulta elimina tanto al nodo como a su relación con el precio
+
+        return res;
+    } catch (error) {
+        console.log('Error en el servicio: ', error);
+        return error;
+    }finally{
+        await session.close();
+    }
+}
 
 
 
@@ -270,4 +346,6 @@ async function AddOneNode(req) {
 module.exports = {
     N4GetALL,
     AddOneNode,
+    UpdateNode,
+    DeleteNode
 };

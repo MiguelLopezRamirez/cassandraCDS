@@ -96,4 +96,13 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @path: 'addnode'
     function addnode(body:priceshistory)
     returns array of LargeString;
+
+    @Core.Description: 'update-one-node-4j'
+  @path: 'updatenode'
+    function updatenode(body:priceshistory)
+    returns array of LargeString;
+    @Core.Description: 'delete-one-node-4j'
+  @path: 'deletenode'
+    function deletenode()
+    returns array of LargeString;
 };

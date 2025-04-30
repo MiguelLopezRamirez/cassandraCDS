@@ -1,8 +1,7 @@
 //1.-importacion de las librerias
 const cds = require ('@sap/cds');
-const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshistory-service-redis");
+//const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshistory-service-redis");
   
-
 //2.-importar el servicio
 // aun no esta creado el servicio
 //const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
@@ -10,6 +9,7 @@ const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshi
 //const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
 
 //3.- estructura princiapl  de la clas de contorller
+const {N4GetALL, AddOneNode, UpdateNode, DeleteNode} = require('../services/inv-neo4j-pricehistory-service');
 
 
 class InvestionsClass extends cds.ApplicationService{
@@ -99,6 +99,38 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
+        //PUT para CosmosDB
+        this.on('updateByIdCosmos', async (req) => {
+            try {
+                return await UpdateByIdPricesHistoryCosmos(req);
+            } catch (error) {
+                req.error({ code: 500, message: error.message });
+            }
+          });
+
+        //DELETE para Cosmos DB
+        this.on('deleteByIdCosmos', async (req) => {  
+            try {  
+                return await DeleteByIdPricesHistoryCosmos(req);  
+            } catch (error) {  
+                req.error({ code: 500, message: error.message });  
+            }  
+            });
+
+
+         //NEO4J⚠
+         this.on('N4GetALL', async (req)=> { 
+            return N4GetALL(req);
+         });
+         this.on('addnode',async(req) =>{
+            return AddOneNode(req)});
+            this.on('updatenode',async (req) => {
+                return UpdateNode(req);            
+            });
+            this.on('deletenode',async (req) => {
+                return DeleteNode(req);
+            });
+
 
         return await super.init();
 
@@ -109,4 +141,3 @@ class InvestionsClass extends cds.ApplicationService{
 };
 
 module.exports = InvestionsClass;
-
