@@ -89,6 +89,25 @@ class InvestionsClass extends cds.ApplicationService{
             }
         });
 
+        //PUT para CosmosDB
+        this.on('updateByIdCosmos', async (req) => {
+            try {
+                return await UpdateByIdPricesHistoryCosmos(req);
+            } catch (error) {
+                req.error({ code: 500, message: error.message });
+            }
+          });
+
+        //DELETE para Cosmos DB
+        this.on('deleteByIdCosmos', async (req) => {  
+            try {  
+                return await DeleteByIdPricesHistoryCosmos(req);  
+            } catch (error) {  
+                req.error({ code: 500, message: error.message });  
+            }  
+            });
+
+
          //NEO4J⚠️
          this.on('N4GetALL', async (req)=> { 
             return N4GetALL(req);

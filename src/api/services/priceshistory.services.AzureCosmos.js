@@ -49,4 +49,90 @@ async function AddOnePricesHistoryCosmos(req) {
       throw new Error(`Error Cosmos DB: ${error.message}`);
   }
 }
-module.exports = { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos };
+
+//Funcion PUT
+async function UpdateByIdPricesHistoryCosmos(req) {
+  try {
+    //Constantes que obtendran la data
+      const { ID, DATE, OPEN, HIGH, LOW, CLOSE, VOLUME } = req.data;
+    //En caso de no contener ID
+      if (!ID) return { error: 'El campo ID es requerido' };
+    //En caso de que ID no se un valor numerico
+      const numericId = parseInt(ID, 10);
+      if (isNaN(numericId)) return { error: 'ID debe ser un número válido' };
+
+      const container = conectionAzureCosmosDB('ztpriceshistory');
+      //Consulta primerop el valor a actualizar
+      const query = {
+          query: "SELECT * FROM c WHERE c.ID = @id",
+          parameters: [{ name: "@id", value: numericId }]
+      };
+      //Ejecucion de la busqieda
+      const { resources: results } = await container.items.query(query).fetchAll();
+      //En caso de no encontrar el registro
+      if (results.length === 0) return { error: "Registro no encontrado" };
+
+      //Generar los datos que se actualizaran 
+      let itemToUpdate = results[0];
+      itemToUpdate.DATE = DATE || itemToUpdate.DATE;
+      itemToUpdate.OPEN = OPEN || itemToUpdate.OPEN;
+      itemToUpdate.HIGH = HIGH || itemToUpdate.HIGH;
+      itemToUpdate.LOW = LOW || itemToUpdate.LOW;
+      itemToUpdate.CLOSE = CLOSE || itemToUpdate.CLOSE;
+      itemToUpdate.VOLUME = VOLUME || itemToUpdate.VOLUME;
+
+      //Ejecutar la actualizacion
+      const { resource: updatedItem } = await container.item(itemToUpdate.id).replace(itemToUpdate);
+
+      const { _rid, _self, _etag, _attachments, _ts, ...cleanItem } = updatedItem;
+      return [cleanItem];
+
+  } catch (error) {
+      console.error('Error al actualizar en Cosmos DB:', error);
+      return { error: 'No se pudo actualizar el dato en Cosmos DB' };
+  }
+}
+
+//Funcion para eliminar dato
+async function DeleteByIdPricesHistoryCosmos(req) {
+  try {
+      const { ID } = req.data; // Obtener el ID desde la solicitud
+      if (!ID) {
+          return { error: 'ID es requerido' };
+      }
+
+      const numericId = parseInt(ID, 10); // Convertir ID a número
+      if (isNaN(numericId)) {
+          return { error: 'ID debe ser un número válido' };
+      }
+
+      const container = conectionAzureCosmosDB('ztpriceshistory'); // Conectar al contenedor
+
+      // Buscar el item con el ID
+      const query = {
+          query: "SELECT * FROM c WHERE c.ID = @id",
+          parameters: [{ name: "@id", value: numericId }]
+      };
+
+      const { resources: results } = await container.items.query(query).fetchAll();
+
+      if (results.length > 0) {
+        const itemToDelete = results[0];
+
+       // Eliminar con `id` y `PartitionKey` correcto
+          await container.item(itemToDelete.id, itemToDelete.partitionKey).delete();
+
+        return { success: true, message: "Registro eliminado correctamente" };
+    } else {
+        return { error: "Registro no encontrado" };
+    }
+  } catch (error) {
+      console.error('Error al eliminar el dato de Cosmos DB:', error);
+      return { error: 'No se pudo eliminar el dato de Cosmos DB' };
+  }
+}
+module.exports = { 
+  GetAllPricesHistoryCosmos, 
+  AddOnePricesHistoryCosmos,
+  UpdateByIdPricesHistoryCosmos,
+  DeleteByIdPricesHistoryCosmos };

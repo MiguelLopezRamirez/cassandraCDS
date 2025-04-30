@@ -60,6 +60,23 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @path :'addOneCosmos'  
     action addOneCosmos(prices : priceshistory) returns array of priceshistory;
 
+    @Core.Description: 'update-by-id-prices-inversions'
+    @path :'updateByIdCosmos'
+    action updateByIdCosmos(
+    ID: Integer, 
+    DATE: String, 
+    OPEN: Decimal, 
+    HIGH: Decimal, 
+    LOW: Decimal, 
+    CLOSE: Decimal, 
+    VOLUME: Integer
+    ) returns priceshistory;
+
+    @Core.Description: 'delete-by-id-prices-inversions'
+    @path :'deleteByIdCosmos'
+    action deleteByIdCosmos(ID: Integer) returns Boolean;
+    
+
     //  NEO4J
     //Get All
     @Core.Description: 'get-all-prices-history-Neo4j'
