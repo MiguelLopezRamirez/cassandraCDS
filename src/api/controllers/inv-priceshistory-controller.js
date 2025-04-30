@@ -1,16 +1,17 @@
 //1.-importacion de las librerias
 const cds = require ('@sap/cds');
+const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshistory-service-redis");
+  
 
 //2.-importar el servicio
 // aun no esta creado el servicio
-const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
-const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
-const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
+//const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
+//const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
+//const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
+
 //3.- estructura princiapl  de la clas de contorller
-
-
 class InvestionsClass extends cds.ApplicationService{
-
+    
     //4.-iniciiarlizarlo de manera asincrona
     async init (){
         // Cassandra
@@ -87,7 +88,15 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
-
+        //GET PARA REDIS
+        this.on("getRedis", async (req) => {
+            // call the service method and return the result to route.
+            return GetRedis(req);
+         });
+        //POST PARA REDIS
+        this.on("addOneRedis", async (req) => {
+            return AddOnePricesHistoryRedis(req);
+        });   
         return await super.init();
 
 
@@ -97,3 +106,4 @@ class InvestionsClass extends cds.ApplicationService{
 };
 
 module.exports = InvestionsClass;
+

@@ -70,7 +70,7 @@ async function DeleteOnePricesHistory(req){
         console.log(error)
         return error;
     }
+    
 }
-
 
 module.exports = { GetAllPricesHistory, AddOnePricesHistory, UpdateOnePricesHistory,DeleteOnePricesHistory };

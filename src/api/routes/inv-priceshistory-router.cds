@@ -59,4 +59,12 @@ service PricesHistoryRoute @(path:'/api/inv') {
     @Core.Description: 'addOne-prices-history-cosmos'  
     @path :'addOneCosmos'  
     action addOneCosmos(prices : priceshistory) returns array of priceshistory;
+    //--REDIS---
+    @Core.Description: 'Get Redis'  
+    @path :'getRedis'  
+    function getRedis() returns array of priceshistory;
+    
+    @Core.Description: 'add-one-id-prices-history-redis'
+    @path            : 'addOneRedis'
+    action   addOneRedis(prices : priceshistory) returns        array of priceshistory;
 };
