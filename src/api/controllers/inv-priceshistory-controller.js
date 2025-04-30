@@ -5,10 +5,11 @@ const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshi
 
 //2.-importar el servicio
 // aun no esta creado el servicio
-//const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
-//const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
-//const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
-
+const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
+const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
+const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
+//Neo4j
+const {N4GetALL, AddOneNode} = require('../services/inv-neo4j-pricehistory-service');
 //3.- estructura princiapl  de la clas de contorller
 
 
@@ -99,6 +100,33 @@ class InvestionsClass extends cds.ApplicationService{
                 });
             }
         });
+
+         //PUT para CosmosDB
+         this.on('updateByIdCosmos', async (req) => {
+            try {
+                return await UpdateByIdPricesHistoryCosmos(req);
+            } catch (error) {
+                req.error({ code: 500, message: error.message });
+            }
+          });
+
+        //DELETE para Cosmos DB
+        this.on('deleteByIdCosmos', async (req) => {  
+            try {  
+                return await DeleteByIdPricesHistoryCosmos(req);  
+            } catch (error) {  
+                req.error({ code: 500, message: error.message });  
+            }  
+            });
+
+        //NEO4J⚠️
+        this.on('N4GetALL', async (req)=> { 
+            return N4GetALL(req);
+         });
+         this.on('addnode',async(req) =>{
+            return AddOneNode(req)});
+
+
 
         return await super.init();
 
