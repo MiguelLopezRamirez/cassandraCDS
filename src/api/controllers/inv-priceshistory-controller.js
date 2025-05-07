@@ -1,16 +1,16 @@
 //1.-importacion de las librerias
 const cds = require ('@sap/cds');
-//const { GetRedis,AddOnePricesHistoryRedis  } = require("../services/inv-priceshistory-service-redis");
+const { GetRedis,AddOnePricesHistoryRedis, UpdateOnePriceHistoryRedis, DeleteOnePricesHistoryRedis   } = require("../services/inv-priceshistory-service-redis");
   
 //2.-importar el servicio
 // aun no esta creado el servicio
-const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
-const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
-const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
-//Neo4j
-const {N4GetALL, AddOneNode} = require('../services/inv-neo4j-pricehistory-service');
-//3.- estructura princiapl  de la clas de contorller
-const {N4GetALL, AddOneNode, UpdateNode, DeleteNode} = require('../services/inv-neo4j-pricehistory-service');
+// const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
+// const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
+// const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
+// //Neo4j
+// const {N4GetALL, AddOneNode} = require('../services/inv-neo4j-pricehistory-service');
+// //3.- estructura princiapl  de la clas de contorller
+// const {N4GetALL, AddOneNode, UpdateNode, DeleteNode} = require('../services/inv-neo4j-pricehistory-service');
 
 
 class InvestionsClass extends cds.ApplicationService{
@@ -58,6 +58,13 @@ class InvestionsClass extends cds.ApplicationService{
             return AddOnePricesHistoryRedis(req);
           });
 
+          this.on("updateOneRedis", async (req) => {
+            return UpdateOnePriceHistoryRedis(req);
+          });
+
+          this.on("deleteOneRedis", async (req) => {
+            return DeleteOnePricesHistoryRedis(req);
+          });
         // Mongo
         this.on('getallMongo', async (req)=> {
             
@@ -150,13 +157,6 @@ class InvestionsClass extends cds.ApplicationService{
                 req.error({ code: 500, message: error.message });  
             }  
             });
-
-        //NEO4J⚠️
-        this.on('N4GetALL', async (req)=> { 
-            return N4GetALL(req);
-         });
-         this.on('addnode',async(req) =>{
-            return AddOneNode(req)});
 
 
 
