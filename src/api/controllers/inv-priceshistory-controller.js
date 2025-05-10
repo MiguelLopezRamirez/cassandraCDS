@@ -4,7 +4,7 @@ const { GetRedis,AddOnePricesHistoryRedis, UpdateOnePriceHistoryRedis, DeleteOne
   
 //2.-importar el servicio
 // aun no esta creado el servicio
-// const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
+const servicioCassandra = require('../services/inv-priceshistory-service-cassandra')
 // const servicioMongo = require('../services/inv-priceshistory-service-mongodb')
 // const { GetAllPricesHistoryCosmos, AddOnePricesHistoryCosmos } = require('../services/priceshistory.services.AzureCosmos');
 // //Neo4j
